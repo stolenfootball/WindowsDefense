@@ -71,3 +71,21 @@ https://download.sophos.com/endpoint/clients/HitmanPro_x64.exe
 2. Edit the **Set client encryption level** and set it to **HIGH**
 3. Edit the **Require use of specific security layer for remote (RDP) connections** policy and set it to **SSL**
 
+### Force secure RPC connections
+1. Go to **Computer Policy > Computer Configuration > Policies > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Security**
+2. Edit the **Require secure RPC communication** key and set it to **Enabled**
+
+### Disable Remote Assist
+1. Go to **Computer Policy > Computer Configuration > Administrative Templates > System > Remote Assistance​**
+2. Set the **Configure Solicited Remote Assistance** key to **Disabled**
+
+### Disable sharing of remote drives over RDP
+1. Go to **Computer Configuration > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Device and Resource Redirection**
+2. Set the **Do not allow Clipboard redirection** key to **Enabled**
+3. Set the **Do not allow drive redirection** key to **Enabled**
+
+### Prevent users from using RDP
+NOTE -- MAKE SURE THIS ISN'T LINKED TO THE ROOT OU, IT WILL LOCK YOU OUT.  ONLY APPLY THIS TO UNPRIVILIGED USERS
+1. Go to **Computer Configuration > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Connections**
+2. Set the **Disable users from connecting remotely using Remote Desktop Services** key to **Enabled**
+
