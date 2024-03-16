@@ -89,3 +89,13 @@ NOTE -- MAKE SURE THIS ISN'T LINKED TO THE ROOT OU, IT WILL LOCK YOU OUT.  ONLY 
 1. Go to **Computer Configuration > Administrative Templates > Windows Components > Remote Desktop Services > Remote Desktop Session Host > Connections**
 2. Set the **Disable users from connecting remotely using Remote Desktop Services** key to **Enabled**
 
+## WinRM Hardening
+### Disallow unencrypted WinRM traffic
+1. Go to **Computer Configuration > Policies > Administrative Templates > Windows Components > Windows Remote Management (WinRM) > WinRM Client**
+2. Set the **Allow unencrypted traffic** key to **Disabled**
+
+### Disable WinRM
+NOTE - THIS IS A POTENTIALLY DISRUPTIVE POLICY THAT COULD BREAK VARIOUS SERVICES.  ONLY APPLY THIS IF YOU ARE ABSOLUTELY CERTAIN.
+1. Go to **"Computer Configuration" > "Policies" > "Administrative Templates" > "Windows Components" > "Windows Remote Management (WinRM)"**
+2. Set the **Disallow remote server management through WinRM** key to **Enabled**
+
