@@ -99,3 +99,34 @@ NOTE - THIS IS A POTENTIALLY DISRUPTIVE POLICY THAT COULD BREAK VARIOUS SERVICES
 1. Go to **"Computer Configuration" > "Policies" > "Administrative Templates" > "Windows Components" > "Windows Remote Management (WinRM)"**
 2. Set the **Disallow remote server management through WinRM** key to **Enabled**
 
+## SMB Hardening
+### Disable SMBv1
+1. Go to **Computer Configuration > Preferences > Windows Settings > Registry**
+2. Create a new Registry Item with the following settings:
+```
+Action: Update
+Hive: HKEY_LOCAL_MACHINE
+Key Path: SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+Value name: SMB1
+Value type: REG_DWORD
+Value data: 0
+```
+
+### Disable SMB Guest Fallback Access
+1. Go to **Computer Configuration > Administrative Templates > Network > Lanman Workstation**
+2. Set the **Enable insecure guest logons** key to **Disabled**
+
+### Enable SMB Signing
+1. Go to **Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > Security Options**
+2. Set the **Microsoft network server: Digitally sign communications (always)** key to **Enabled**
+3. Set the **Microsoft network client: Digitally sign communications (always)** key to **Enabled**
+
+### Disable WebDAV Connections
+1. Go to **Computer Configuration > Preferences > Control Panel Settings > Services**
+2. Create a new Service Item
+3. Set the item contents to:
+```
+Service Name: Webclient
+Startup: Disabled
+Service action: Stop service
+```
