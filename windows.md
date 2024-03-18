@@ -296,3 +296,20 @@ Note - make sure remote systems support credential guard.  This can be dangerous
 1. Go to **Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options**
 2. Set the **Interactive logon: Number of previous logons to cache (in case domain controller is not available)** policy to **0**
 
+## NTLM Hardening
+### Could impact share access (configured to only send NTLMv2, refuse LM & NTLM) - CVE-2019-1040
+1. Go to **Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options**
+2. Set the **Network security: LAN Manager authentication level** policy to **Send NTLMv2 response only. Refuse LM & NTLM**
+
+### Allowing Local System to use computer identity for NTLM
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network Security: Allow Local System to use computer identity for NTLM** policy to **Enabled**
+
+### Preventing null session fallback for NTLM
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network Security: Allow LocalSystem NULL session fallback** policy to **Disabled**
+
+### Setting NTLM SSP server and client to require NTLMv2 and 128-bit encryption
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network security: Minimum session security for NTLM SSP based (including secure RPC) servers** policy to **Require NTLMv2 session security** and **Require 128-bit encryption** (all options selected)
+3. Se the **Network security: Minimum session security for NTLM SSP based (including secure RPC) clients** policy to **Require NTLMv2 session security** and **Require 128-bit encryption** (all options selected). 
