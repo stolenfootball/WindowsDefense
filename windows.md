@@ -207,3 +207,92 @@ Filtering out the privileged token for local administrator accounts will prevent
 1. Go to **Computer Configuration -> Administrative Templates -> MS Security Guide**
 2. Set the **Apply UAC restrictions to local accounts on network logons** policy to **Enabled**
 
+## LSASS Protections
+###  Enabling LSA protection mode
+1. Go to **Computer Configuration > Preferences > Windows Settings**
+2. Right-click **Registry**, point to **New**, and then select **Registry Item**. The **New Registry Properties** dialog box appears.
+
+3. In the Hive list, select HKEY_LOCAL_MACHINE.
+4. In the Key Path list, browse to SYSTEM\CurrentControlSet\Control\Lsa.
+5. In the Value name box, type RunAsPPL.
+6. In the Value type box, select REG_DWORD.
+7. In the Value data box, type:
+    - 00000001 to enable LSA protection with a UEFI variable.
+    - 00000002 to enable LSA protection without a UEFI variable, only enforced on Windows 11 version 22H2 and later.
+
+### Enabling LSASS audit mode
+1. Go to **Computer Configuration > Preferences > Windows Settings**
+2. Right-click **Registry**, point to **New**, and then select **Registry Item**. The **New Registry Properties** dialog box appears.
+
+3. In the Hive list, select HKEY_LOCAL_MACHINE.
+4. In the Key Path list, browse to SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe.
+5. In the Value name box, type AuditLevel.
+6. In the Value type box, select REG_DWORD.
+7. In the Value data box, type 00000008
+
+### Don't allow accounts with blank passwords to access network resources
+1. Go to **Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options**
+2. Set the **Accounts: Limit local account use of blank passwords to console logon only** policy to **Enabled**
+
+### Prevent anonymous users from enumerating resources
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network access: Do not allow anonymous enumeration of SAM accounts and shares** policy to **Enabled**
+
+### Prevent anonymous users from enumerating SAM accounts
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network access: Do not allow anonymous enumeration of SAM accounts** policy to **Enabled**
+
+### Stop storing LM hashes on password changes
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network security: Do not store LAN Manager hash value on next password change** policy to **Enabled**
+
+### Only allow administrators to schedule AT commands
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Domain Controller: Allow server operators to schedule tasks** to **Disabled**
+
+### Do not allow network credentials to be stored on the local system
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network access: Do not allow storage of passwords and credentials for network authentication** policy to **Enabled**
+
+### Restricting access from anonymous users (treating them seperate from Everyone group)
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **Network access: Let everyone permissions apply to anonymous users** to **Disabled**
+
+### Setting amount of time to clear logged-off users' credentials from memory (secs)
+1. Go to **Computer Configuration > Preferences > Windows Settings**
+2. Right-click **Registry**, point to **New**, and then select **Registry Item**. The **New Registry Properties** dialog box appears.
+
+3. In the Hive list, select HKEY_LOCAL_MACHINE.
+4. In the Key Path list, browse to SYSTEM\CurrentControlSet\Control\Lsa
+5. In the Value name box, type TokenLeakDetectDelaySecs.
+6. In the Value type box, select REG_DWORD.
+7. In the Value data box, type 30
+
+### Restricting remote calls to SAM to just Administrators
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Edit the **Network access: Restrict clients allowed to make remote calls to SAM** policy
+3. Select **Edit Security** to configure the **Security descriptor:**.
+4. Add **Administrators** in **Group or user names:** if it is not already listed (this is the default).
+5. Select **Administrators** in **Group or user names:**.
+6. Select **Allow** for **Remote Access** in **Permissions** for **Administrators**.
+7. Click **OK**.
+8. The **Security descriptor:** must be populated with **O:BAG:BAD:(A;;RC;;;BA)** for the policy to be enforced. 
+
+### Enabling Credential Guard (depends on if the VM can support it)
+Note - make sure remote systems support credential guard.  This can be dangerous, be sure before enabling.
+1. Go to **Computer Configuration >> Administrative Templates >> System >> Device Guard**
+2. Set the **Turn On Virtualization Based Security** policy to **Enabled**
+3. Set **Enabled with UEFI lock** to **Credential Guard Configuration**
+
+### Disabling WDigest, removing storing plain text passwords in LSASS
+1. Go to **Computer Configuration >> Administrative Templates >> MS Security Guide**
+2. Set the **WDigest Authentication (disabling may require KB2871997)** policy to **Disabled**
+
+### Disabling autologon
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **MSS: (AutoAdminLogon) Enable Automatic Logon (not recommended)** policy to **Disabled**
+
+### Set number of cached logons to 0
+1. Go to **Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options**
+2. Set the **Interactive logon: Number of previous logons to cache (in case domain controller is not available)** policy to **0**
+
