@@ -1,4 +1,6 @@
 # Script to change local account passwords on each computer
+# * NEED TO CHANGE FIREWALL RULES TO WORK *
+
 Import-Module ActiveDirectory
 
 Function Get-RandomPassword {
