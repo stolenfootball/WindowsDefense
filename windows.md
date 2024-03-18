@@ -100,6 +100,8 @@ NOTE - THIS IS A POTENTIALLY DISRUPTIVE POLICY THAT COULD BREAK VARIOUS SERVICES
 2. Set the **Disallow remote server management through WinRM** key to **Enabled**
 
 ## SMB Hardening
+Credit to [Ned Pyle at Microsoft](https://techcommunity.microsoft.com/t5/itops-talk-blog/beyond-the-edge-how-to-secure-smb-traffic-in-windows/ba-p/1447159?WT.mc_id=ITOPSTALK-blog-abartolo)
+
 ### Disable SMBv1
 1. Go to **Computer Configuration > Preferences > Windows Settings > Registry**
 2. Create a new Registry Item with the following settings:
@@ -130,3 +132,78 @@ Service Name: Webclient
 Startup: Disabled
 Service action: Stop service
 ```
+## Remove Outdated Features
+### Remove Powershellv2
+On each machine, run the following command in an Administrative command prompt:
+```powershell
+dism.exe /Online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellv2" /NoRestart
+```
+```powershell
+dism.exe /Online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
+```
+
+### Remove SMBv1
+```powershell
+dism.exe /Online /Disable-Feature /FeatureName:"SMB1Protocol" /NoRestart
+```
+
+## Remove Local Group Policies
+On each machine, run the following command in an Administrative command prompt:
+```powershell
+RD /S /Q "%WinDir%System32GroupPolicyUsers"
+```
+```powershell
+RD /S /Q "%WinDir%System32GroupPolicy"
+```
+```powershell
+gpupdate /force
+```
+## Credential Delegation Hardening
+There are tradeoffs involved with this.  Prevents the storing of admin hashes on remote machine, but makes RDP connections more vulnerable to Pass The Hash attacks.  Leaving it disabled for now, once storing of NTLM hashes is disabled this shouldn't help that much.
+
+## UAC Hardening
+### Prevent apps from bypassing UAC
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Allow UIAccess applications to prompt for elevation without using the secure desktop** policy to **Disabled**
+
+### Force the Administrator account to run in Admin Approval mode
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Admin Approval Mode for the Built-in Administrator account** policy to **Enabled**
+
+### Make UAC prompt Administrators for consent
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode** policy to **Prompt for consent**
+
+### Force UAC for all user accounts
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Behavior of the elevation prompt for standard users** policy to **Prompt for credentials on the secure desktop**
+
+### Detect app installations and prompt UAC
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Detect application installations and prompt for elevation** policy to **Elevated**
+
+### Force UAC on all applications, not just signed ones
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Only elevate executables that are signed and validated** policy to **Disabled**
+
+### Only allow programs installed in secure locations to elevate to administrator
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Only elevate UIAccess applications that are installed in secure locations** policy to **Enabled**
+
+### Prevent Administrators from bypassing UAC
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Run all administrators in Admin Approval Mode** policy to **Enabled**
+
+### Force UAC to run in Secure Desktop mode
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Switch to the secure desktop when prompting for elevation** policy to **Enabled**
+
+### Force UAC failures to run in virtualized user space
+1. Go to **Computer Configuration -> Windows Settings -> Security Settings -> Local Policies -> Security Options**
+2. Set the **User Account Control: Virtualize file and registry write failures to per-user locations** policy to **Enabled**
+
+### Applying UAC restrictions to local accounts on network logons
+Filtering out the privileged token for local administrator accounts will prevent the elevated privileges of these accounts from being used over the network.
+1. Go to **Computer Configuration -> Administrative Templates -> MS Security Guide**
+2. Set the **Apply UAC restrictions to local accounts on network logons** policy to **Enabled**
+
