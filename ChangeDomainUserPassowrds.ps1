@@ -22,8 +22,10 @@ Function Get-RandomPassword {
 
 }
 
-
+# Need to change path
 $users = Get-ADUser -Filter {Name -notlike "Admin"} -Properties * -SearchBase "OU=umasscybersec, DC=umasscybersec,DC=com"
+
+# Query and change password for each user
 foreach ($user in $users) {
    $username = $user.Name
    $plainPassword = Get-RandomPassword
