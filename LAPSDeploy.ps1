@@ -1,4 +1,4 @@
-< # READ
+<# READ
 Download LAPS x64.msi:
 https://www.microsoft.com/en-us/download/details.aspx?id=46899
 Installation: 
