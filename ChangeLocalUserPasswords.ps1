@@ -23,6 +23,10 @@ Function Get-RandomPassword {
 
 # Find and store all ad computers
 $computers = Get-ADComputer -Filter { OperatingSystem -notlike "*Server*"}
+
+# Get Credential of an admin account who has permission to run Invoke-Command
+$cred = Get-Credential
+
 foreach ($each in $computers) {
     $computer = $each.Name
 
@@ -39,7 +43,7 @@ foreach ($each in $computers) {
             foreach($user in $users) {
                 $plainPassword = Get-RandomPassword
                 $newPassword = ConvertTo-SecureString $plainPassword -AsPlainText -Force
-                Set-LocalUser -Name $user -Password $newPassword
+                Invoke-Command -ComputerName $computer -Credential $cred -ScriptBlock { Set-LocalUser -Name $user -Password $newPassword }
                 Write-Output("Password change successful")
             }
         }
