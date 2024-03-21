@@ -8,12 +8,12 @@ Everything else uses default
 Reboot to ensure script below works
 
 *Do this after running this script*
-Create a folder “laps” in sysvol ->copy and paste installed LAPS.x64 into the folder
+Create a shared folder “laps” in sysvol ->copy and paste installed LAPS.x64 into the folder, can add $ at the end to make it hidden
 Group Policy Management -> Create a new group policy->computer configurations->software settings->software installation->new package->paste path to “laps” folder
 Administrative Templates->LAPS->Configure settings->Enable local admin password management ->Enable Password Settings (change stuff as needed) -> Enable Do not allow password expiration time longer than required
 Link that GPO to OU with client computers
 Run gpupdate /force on client computers ->reboot to take effect 
-To check passwords: open LAPS UI or Get-AdmPwdPassword -ComputerName {computer name}
+*To check passwords: open LAPS UI or Get-AdmPwdPassword -ComputerName {computer name}*
 #>
 
 # Script to deploy LAPS after installation and before creating a GPO
