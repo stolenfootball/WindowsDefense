@@ -30,13 +30,16 @@ foreach ($each in $computers) {
     if (test-Connection -Cn $computer -quiet) {
         try {
             # get all local users on the computer
-            $users = Invoke-Command -ComputerName $computer -ScriptBlock {Get-LocalUser -name "username" | select Username}
+            # will need to enable wmi firewall rule for domain
+            $users = Get-WmiObject -ComputerName $computer -Class win32_UserAccount -Filter "LocalAccount=True" | Select-Object -ExpandProperty name
+            
+            # alternative: $users = Invoke-Command -ComputerName $computer -ScriptBlock {Get-LocalUser -name "username" | select Username}
             
             # change password for each user
             foreach($user in $users) {
                 $plainPassword = Get-RandomPassword
                 $newPassword = ConvertTo-SecureString $plainPassword -AsPlainText -Force
-                Set-LocalUser -Password $newPassword
+                Set-LocalUser -Name $user -Password $newPassword
                 Write-Output("Password change successful")
             }
         }
