@@ -37,7 +37,7 @@ foreach ($each in $computers) {
             # will need to enable wmi firewall rule for domain
             $users = Get-WmiObject -ComputerName $computer -Class win32_UserAccount -Filter "LocalAccount=True" | Select-Object -ExpandProperty name
             
-            # alternative: $users = Invoke-Command -ComputerName $computer -ScriptBlock {Get-LocalUser -name "username" | select Username}
+            # alternative: $users = Invoke-Command -ComputerName $computer -Credential $cred -ScriptBlock {Get-LocalUser -name "username" | select Username}
             
             # change password for each user
             foreach($user in $users) {
